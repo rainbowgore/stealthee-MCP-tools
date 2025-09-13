@@ -16,6 +16,7 @@ import traceback
 from bs4 import BeautifulSoup
 import openai
 from dotenv import load_dotenv
+import re  # Add missing import
 
 # Load environment variables from .env file
 load_dotenv()
@@ -293,7 +294,7 @@ class MCPStdioServer:
         logger.info(f"Executing tool: {tool_name} with args: {arguments}")
         
         try:
-        if tool_name == "web_search":
+            if tool_name == "web_search":
                 return await self._web_search_handler(arguments)
             elif tool_name == "url_extract":
                 return await self._url_extract_handler(arguments)
@@ -510,8 +511,8 @@ Respond with valid JSON only:"""
 
     async def _search_tech_sites_handler(self, arguments: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Handle tech sites search using Tavily API with domain filtering"""
-            query = arguments.get("query", "")
-            num_results = arguments.get("num_results", 3)
+        query = arguments.get("query", "")
+        num_results = arguments.get("num_results", 3)
         
         # Define tech news sites to search
         tech_domains = [
@@ -885,7 +886,6 @@ Respond with valid JSON array format:
             for i, scoring_text in enumerate(scoring_result):
                 if "Launch Likelihood:" in scoring_text.get("text", ""):
                     # Extract score from the text
-                    import re
                     score_match = re.search(r"Launch Likelihood: ([\d.]+)", scoring_text["text"])
                     if score_match:
                         score = float(score_match.group(1))
@@ -1093,8 +1093,6 @@ Respond with valid JSON array format:
 
     def _extract_urls_from_search_results(self, search_text: str) -> List[str]:
         """Extract URLs from search results text"""
-        import re
-        
         # Look for URLs in the search results
         url_pattern = r'https?://[^\s<>"{}|\\^`\[\]]+'
         urls = re.findall(url_pattern, search_text)
@@ -1182,7 +1180,7 @@ Respond with valid JSON array format:
                     if response.status == 200:
                         logger.info(f"Slack alert sent successfully for: {title}")
                         return True
-        else:
+                    else:
                         logger.error(f"Slack alert failed with status {response.status}")
                         return False
                         
