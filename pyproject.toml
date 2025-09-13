@@ -1,0 +1,62 @@
+[build-system]
+requires = ["uv_build>=0.8.15,<0.9.0"]
+build-backend = "uv_build"
+
+[project]
+name = "stealthee-mcp"
+version = "1.0.0"
+description = "AI-powered stealth product launch detection system"
+authors = [
+    {name = "Stealth Launch Radar Team", email = "team@stealthee.com"}
+]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.12"
+dependencies = [
+    "mcp>=1.13.0",
+    "smithery>=0.1.23",
+    "aiohttp>=3.9.0",
+    "beautifulsoup4>=4.12.2",
+    "openai>=1.0.0",
+    "python-dotenv>=1.0.1",
+    "requests>=2.32.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.1.1",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "flake8>=6.0.0",
+]
+
+[project.scripts]
+dev = "smithery.cli.dev:main"
+playground = "smithery.cli.playground:main"
+
+[tool.smithery]
+server = "stealth_server:create_server"
+
+[tool.black]
+line-length = 88
+target-version = ['py312']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88

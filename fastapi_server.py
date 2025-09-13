@@ -21,6 +21,18 @@ from dotenv import load_dotenv
 # Import the MCP server class and handlers
 from mcp_server_stdio import MCPStdioServer
 
+# Smithery compatibility
+try:
+    from smithery.decorators import smithery
+    SMITHERY_AVAILABLE = True
+except ImportError:
+    SMITHERY_AVAILABLE = False
+    # Create a dummy decorator if Smithery is not available
+    def smithery():
+        def decorator(func):
+            return func
+        return decorator
+
 # Load environment variables
 load_dotenv()
 
@@ -33,11 +45,16 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Initialize FastAPI app
-app = FastAPI(
-    title="Stealth Launch Radar API",
-    description="API for detecting stealth product launches using AI-powered analysis",
-    version="1.0.0"
-)
+@smithery.server()
+def create_app():
+    return FastAPI(
+        title="Stealth Launch Radar API",
+        description="API for detecting stealth product launches using AI-powered analysis",
+        version="1.0.0"
+    )
+
+# Create the app instance
+app = create_app()
 
 # Initialize MCP server instance
 mcp_server = MCPStdioServer()

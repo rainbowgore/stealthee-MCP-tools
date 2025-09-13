@@ -1,6 +1,6 @@
 # Stealthee MCP - Tools for being early
 
-[![Python](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/python-3.12%2B-blue)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/Framework-FastAPI-009688)](https://fastapi.tiangolo.com/)
 [![MCP](https://img.shields.io/badge/MCP-Server-4b8bbe)](https://github.com/nimbleai/mcp)
 [![OpenAI API](https://img.shields.io/badge/OpenAI-Integrated-orange)](https://platform.openai.com/)
@@ -42,7 +42,7 @@ It combines search, extraction, scoring, and alerting into a plug-and-play pipel
 
 ### Prerequisites
 
-- Python 3.8+
+- Python 3.12+ (required for Smithery deployment)
 - API keys for external services (see Environment Variables)
 
 ### Quick Start
@@ -64,13 +64,23 @@ It combines search, extraction, scoring, and alerting into a plug-and-play pipel
    # Edit .env with your API keys
    ```
 
-3. **Start MCP Server**
+3. **Start MCP Server** (for Claude Desktop)
 
    ```bash
    python mcp_server_stdio.py
    ```
 
-4. **Start FastAPI Server** (Optional)
+4. **Start FastMCP Server** (for Smithery)
+
+   ```bash
+   # Test locally with Smithery playground
+   python -m smithery.cli.playground stealth_server:create_server
+
+   # Or deploy to Smithery
+   smithery dev
+   ```
+
+5. **Start FastAPI Server** (Optional - Legacy)
    ```bash
    python start_fastapi.py
    # Or for Smithery compatibility:
@@ -158,6 +168,25 @@ curl -X POST "http://localhost:8000/tools/run_pipeline" \
   -d '{"query": "new AI product launch", "num_results": 3}'
 ```
 
+### Smithery Playground
+
+Test your tools interactively with the Smithery playground:
+
+```bash
+# Start interactive playground
+python -m smithery.cli.playground stealth_server:create_server
+
+# Or use the dev server
+smithery dev
+```
+
+The playground provides:
+
+- Interactive tool testing
+- Real-time API key configuration
+- Visual tool interface
+- Debug logging
+
 ## 🧠 Smithery Integration
 
 This project is **natively compatible with [Smithery](https://smithery.tools/)** — a local dev UI and workflow runner for MCP tools (Model Context Protocol). If you're building AI pipelines with Claude, LangGraph, or agentic tools, Smithery gives you:
@@ -173,11 +202,14 @@ This project is **natively compatible with [Smithery](https://smithery.tools/)**
 # Start Smithery development server (in this repo)
 smithery dev
 
+# Or use the playground for interactive testing
+python -m smithery.cli.playground stealth_server:create_server
+
 Then open: http://localhost:3000/dev
 
 You'll see all 7 tools from this repo available as interactive cards inside the GUI.
 
-Tool registration is defined in .smithery/manifest.json — auto-synced from mcp_server_stdio.py and tools/*.json.
+Tool registration is defined in stealth_server.py using FastMCP decorators.
 ```
 
 ## 🏗️ Architecture
@@ -188,6 +220,14 @@ Tool registration is defined in .smithery/manifest.json — auto-synced from mcp
 - Provides 7 core tools for stealth detection
 - Handles JSON-RPC communication with Claude Desktop
 - Includes SQLite database for signal storage
+
+### FastMCP Server (`stealth_server.py`)
+
+- Implements FastMCP for Smithery deployment
+- Provides 7 core tools for stealth detection
+- Uses `@smithery.server()` decorator with session config
+- HTTP-based MCP server (not stdio)
+- Session-based API key management
 
 ### FastAPI Server (`fastapi_server.py`)
 
@@ -264,10 +304,13 @@ curl -X POST "http://localhost:8000/tools/run_pipeline" \
 
 ```
 stealthee-MCP-tools/
-├── mcp_server_stdio.py          # Main MCP server
-├── fastapi_server.py            # FastAPI server
+├── mcp_server_stdio.py          # MCP server (stdio) - for Claude Desktop
+├── stealth_server.py            # FastMCP server - for Smithery deployment
+├── fastapi_server.py            # FastAPI server (legacy)
 ├── start_fastapi.py             # FastAPI startup script
 ├── start_smithery.sh            # Smithery startup script
+├── pyproject.toml               # Python project config (Smithery)
+├── smithery.yaml                # Smithery runtime config
 ├── requirements.txt             # Python dependencies
 ├── .gitignore
 ├── tools/                      # Tool schema definitions
@@ -278,7 +321,7 @@ stealthee-MCP-tools/
 │   ├── search_tech_sites.json
 │   ├── parse_fields.json
 │   └── run_pipeline.json
-├── .smithery/                  # Smithery configuration
+├── .smithery/                  # Smithery configuration (legacy)
 │   └── manifest.json
 ├── data/                       # Data storage
 │   └── signals.db             # SQLite database
@@ -294,12 +337,13 @@ stealthee-MCP-tools/
 
 ### Adding New Tools
 
-1. Add tool definition to `mcp_server_stdio.py`
-2. Implement handler method
-3. Register in `execute_tool` method
-4. Create JSON schema in `tools/`
-5. Add FastAPI endpoint in `fastapi_server.py`
-6. Update Smithery manifest
+1. Add tool definition to `mcp_server_stdio.py` (for stdio)
+2. Add tool definition to `stealth_server.py` (for FastMCP/Smithery)
+3. Implement handler methods in both servers
+4. Register in `execute_tool` method (stdio) and `@server.tool()` decorator (FastMCP)
+5. Create JSON schema in `tools/`
+6. Add FastAPI endpoint in `fastapi_server.py` (legacy)
+7. Update Smithery manifest (legacy)
 
 ### Dependencies
 
