@@ -9,6 +9,8 @@
 [![Slack Alerts](https://img.shields.io/badge/Slack-Alerts%20Enabled-4A154B?logo=slack)](https://slack.com/)
 [![Smithery](https://img.shields.io/badge/Smithery-Compatible-%23007acc)](https://smithery.tools/)
 
+![Stealthee Logo](./mcp-stealthee.png)
+
 Stealthee is a dev-first system for surfacing pre-public product signals - before they trend.
 It combines search, extraction, scoring, and alerting into a plug-and-play pipeline you can integrate into Claude, LangGraph, Smithery, or your own AI stack via MCP.
 
@@ -45,7 +47,7 @@ Use it if you're:
 | `parse_fields`        | Extract structured fields from HTML          |
 | `run_pipeline`        | End-to-end detection pipeline                |
 
-## Installation
+## Installation & Setup
 
 ### Prerequisites
 
@@ -77,32 +79,22 @@ Use it if you're:
    SLACK_WEBHOOK_URL=your_slack_webhook_here
    ```
 
-3. **Start MCP Server** (for Claude Desktop)
+3. **Start Servers**
 
    ```bash
+   # MCP Server (for Claude Desktop)
    python mcp_server_stdio.py
-   ```
 
-4. **Start FastMCP Server** (for Smithery)
-
-   ```bash
-   # Test locally with Smithery playground
-   python -m smithery.cli.playground stealth_server:create_server
-
-   # Or use the dev server
+   # FastMCP Server (for Smithery)
    smithery dev
-   ```
 
-5. **Start FastAPI Server** (Optional - Legacy)
-   ```bash
+   # FastAPI Server (Optional - Legacy)
    python start_fastapi.py
    ```
 
-## 🔧 Configuration
-
 ### Claude Desktop Integration
 
-Add to your `claude_desktop_config.json`:
+Add to your `config.json` file:
 
 ```json
 {
@@ -120,28 +112,73 @@ Add to your `claude_desktop_config.json`:
 }
 ```
 
-## 📖 Usage
+## Running the End-to-End Pipeline
+
+The `run_pipeline` tool orchestrates all other tools to provide complete stealth launch detection.
+
+### Claude Desktop
+
+```
+Use the run_pipeline tool: "Run stealth launch detection for 'AI startup funding' with 5 results"
+```
+
+### Smithery Playground
+
+```bash
+smithery dev
+# Use the interactive GUI to configure and run the pipeline
+```
+
+### FastAPI
+
+```bash
+curl -X POST "http://localhost:8000/tools/run_pipeline" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "stealth AI product", "num_results": 5}'
+```
+
+### Parameters
+
+- `query` (required): Search query for stealth launches
+- `num_results` (default: 5): Number of URLs to analyze
+- `target_fields` (default: ["pricing", "changelog"]): Fields to extract
+
+### What It Does
+
+1. Searches tech sites for your query
+2. Extracts content from each URL
+3. Parses structured data (pricing, changelog)
+4. Scores all signals with AI
+5. Stores results in database
+6. Sends Slack alerts for high-confidence signals
+
+## 📖 Usage Examples
 
 ### MCP Server (Claude Desktop)
 
 The MCP server provides 7 tools that can be used directly in Claude Desktop:
 
-1. **Search for stealth launches**:
+````
+# Competitive Intelligence
+Use web_search to find stealth launches in the AI analytics space before public announcement
 
-   ```
-   Use web_search to find recent stealth product launches
-   ```
+# Market Signal Analysis
+Use url_extract on https://startupx.com/roadmap to check for early indicators of a private beta
 
-2. **Extract and analyze content**:
+# Go-to-Market Forensics
+Use score_signal to assess how likely a changelog is tied to a stealth product rollout
 
-   ```
-   Use url_extract to get content from a URL, then score_signal to analyze it
-   ```
+# Early-Stage Market Mapping
+Use run_pipeline to sweep “AI legal tools” across tech blogs and classify high-confidence signals
 
-3. **Run complete pipeline**:
-   ```
-   Use run_pipeline to search, extract, parse, and score signals automatically
-   ```
+# Structured Field Parsing
+Use parse_fields to extract pricing and release notes from an early-stage landing page
+
+# Developer Tooling Workflow
+Use batch_score_signals to process a backlog of scraped product updates and surface high-priority leads for alerting
+
+# Targeted Tech Discovery
+Use search_tech_sites to scan Product Hunt and TechCrunch for signs of emerging fintech launches
 
 ### FastAPI Server
 
@@ -163,30 +200,11 @@ curl -X POST "http://localhost:8000/tools/web_search" \
 curl -X POST "http://localhost:8000/tools/run_pipeline" \
   -H "Content-Type: application/json" \
   -d '{"query": "new AI product launch", "num_results": 3}'
-```
-
-### Smithery Playground
-
-Test your tools interactively with the Smithery playground:
-
-```bash
-# Start interactive playground
-python -m smithery.cli.playground stealth_server:create_server
-
-# Or use the dev server
-smithery dev
-```
-
-The playground provides:
-
-- Interactive tool testing
-- Real-time API key configuration
-- Visual tool interface
-- Debug logging
+````
 
 ## Smithery Integration
 
-This project is **natively compatible with [Smithery](https://smithery.tools/)** — a local dev UI and workflow runner for MCP tools (Model Context Protocol). If you're building AI pipelines with Claude, LangGraph, or agentic tools, Smithery gives you:
+This project is **natively compatible with [Smithery](https://smithery.tools/)** — a local dev UI and workflow runner for MCP tools. If you're building AI pipelines with Claude, LangGraph, or agentic tools, Smithery gives you:
 
 - Live GUI to test all 7 tools via interactive interface
 - Auto-generated forms from tool schemas
@@ -242,48 +260,6 @@ Signals are stored in `data/signals.db` with the following schema:
 | `confidence`   | TEXT    | Confidence level                |
 | `reasoning`    | TEXT    | AI reasoning for the score      |
 | `created_at`   | TEXT    | ISO timestamp                   |
-
-## 📁 Project Structure
-
-```
-stealthee-MCP-tools/
-├── mcp_server_stdio.py          # MCP server (stdio) - for Claude Desktop
-├── stealth_server.py            # FastMCP server - for Smithery deployment
-├── fastapi_server.py            # FastAPI server (legacy)
-├── start_fastapi.py             # FastAPI startup script
-├── pyproject.toml               # Python project config (Smithery)
-├── smithery.yaml                # Smithery runtime config
-├── requirements.txt             # Python dependencies
-├── .gitignore
-├── src/                         # Smithery package structure
-│   └── stealthee_mcp/
-│       ├── __init__.py
-│       └── server.py            # FastMCP server implementation
-├── tools/                       # Tool schema definitions
-│   ├── web_search.json
-│   ├── url_extract.json
-│   ├── score_signal.json
-│   ├── batch_score_signals.json
-│   ├── search_tech_sites.json
-│   ├── parse_fields.json
-│   └── run_pipeline.json
-├── .smithery/                   # Smithery configuration (legacy)
-│   └── manifest.json
-├── data/                        # Data storage
-│   └── signals.db              # SQLite database
-├── testing/                     # Testing utilities
-│   ├── validate_config.py
-│   ├── test_fastapi.py
-│   ├── monitor_logs.sh
-│   ├── debug_mcp.sh
-│   ├── validate_server.sh
-│   ├── test.sh
-│   ├── developer_settings.json
-│   └── test_run_pipeline.json
-├── planning/                    # Development planning
-│   └── checklist.md
-└── README.md
-```
 
 ## 🔧 Development
 
