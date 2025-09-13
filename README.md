@@ -1,4 +1,4 @@
-# Stealthee MCP - Be Early
+# Stealthee MCP - Tools for being early
 
 [![Python](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/Framework-FastAPI-009688)](https://fastapi.tiangolo.com/)
