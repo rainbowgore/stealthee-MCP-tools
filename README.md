@@ -38,7 +38,7 @@ It combines search, extraction, scoring, and alerting into a plug-and-play pipel
 | `parse_fields`        | Extract structured fields from HTML          |
 | `run_pipeline`        | End-to-end detection pipeline                |
 
-## 🛠️ Installation
+## Installation
 
 ### Prerequisites
 
