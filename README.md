@@ -158,16 +158,26 @@ curl -X POST "http://localhost:8000/tools/run_pipeline" \
   -d '{"query": "new AI product launch", "num_results": 3}'
 ```
 
-### Smithery Integration
+## 🧠 Smithery Integration
 
-The tool is compatible with [Smithery](https://smithery.sh):
+This project is **natively compatible with [Smithery](https://smithery.tools/)** — a local dev UI and workflow runner for MCP tools (Model Context Protocol). If you're building AI pipelines with Claude, LangGraph, or agentic tools, Smithery gives you:
+
+- ✅ Live GUI to test all tools via `manifest.json`
+- ✅ Auto-generated forms from tool schemas
+- ✅ Support for Claude Desktop and LangGraph workflows
+- ✅ Local tool orchestration + debug view
+
+### 🔁 To use in Smithery:
 
 ```bash
-# Start Smithery development server
+# Start Smithery development server (in this repo)
 smithery dev
 
-# Or use the provided script
-./start_smithery.sh
+Then open: http://localhost:3000/dev
+
+You'll see all 7 tools from this repo available as interactive cards inside the GUI.
+
+Tool registration is defined in .smithery/manifest.json — auto-synced from mcp_server_stdio.py and tools/*.json.
 ```
 
 ## 🏗️ Architecture
