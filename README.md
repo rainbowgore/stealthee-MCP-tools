@@ -259,7 +259,7 @@ stealthee-MCP-tools/
 ├── start_fastapi.py             # FastAPI startup script
 ├── start_smithery.sh            # Smithery startup script
 ├── requirements.txt             # Python dependencies
-├── .gitignore                  # Git ignore rules
+├── .gitignore
 ├── tools/                      # Tool schema definitions
 │   ├── web_search.json
 │   ├── url_extract.json
@@ -277,7 +277,7 @@ stealthee-MCP-tools/
 │   ├── test_fastapi.py
 │   ├── monitor_logs.sh
 │   └── test_run_pipeline.json
-└── README.md                   # This file
+└── README.md
 ```
 
 ## 🔧 Development
