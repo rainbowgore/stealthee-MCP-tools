@@ -307,7 +307,7 @@ The project uses minimal, focused dependencies:
 
 MIT License - see LICENSE file for details
 
-## 🆘 Support
+## Support
 
 - **Issues**: Create an issue on [GitHub](https://github.com/rainbowgore/stealthee-MCP-tools/issues)
 - **Documentation**: Check the API docs at `/docs`
