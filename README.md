@@ -299,7 +299,7 @@ stealthee-MCP-tools/
 
 ## 📄 License
 
-MIT License - see LICENSE file for details
+MIT License
 
 ## Support
 
