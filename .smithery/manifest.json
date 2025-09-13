@@ -1,0 +1,244 @@
+{
+    "name": "stealth-launch-radar",
+    "version": "1.0.0",
+    "description": "AI-powered stealth product launch detection system",
+    "author": "Stealth Launch Radar Team",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/rainbowgore/stealthee-MCP-tools"
+    },
+    "endpoints": {
+        "base_url": "http://localhost:8000",
+        "tools": [
+            {
+                "name": "web_search",
+                "path": "/tools/web_search",
+                "method": "POST",
+                "description": "Search the web for information about stealth product launches",
+                "input_schema": {
+                    "type": "object",
+                    "properties": {
+                        "query": {
+                            "type": "string",
+                            "description": "Search query for stealth launches"
+                        },
+                        "num_results": {
+                            "type": "integer",
+                            "description": "Number of results to return",
+                            "default": 3
+                        }
+                    },
+                    "required": [
+                        "query"
+                    ]
+                }
+            },
+            {
+                "name": "url_extract",
+                "path": "/tools/url_extract",
+                "method": "POST",
+                "description": "Extract content from a URL for analysis",
+                "input_schema": {
+                    "type": "object",
+                    "properties": {
+                        "url": {
+                            "type": "string",
+                            "description": "URL to extract content from"
+                        },
+                        "parsing_type": {
+                            "type": "string",
+                            "description": "Type of parsing (plain_text or html)",
+                            "default": "plain_text"
+                        }
+                    },
+                    "required": [
+                        "url"
+                    ]
+                }
+            },
+            {
+                "name": "score_signal",
+                "path": "/tools/score_signal",
+                "method": "POST",
+                "description": "Score a signal for launch likelihood using AI",
+                "input_schema": {
+                    "type": "object",
+                    "properties": {
+                        "signal_text": {
+                            "type": "string",
+                            "description": "Text content of the signal to score"
+                        },
+                        "signal_title": {
+                            "type": "string",
+                            "description": "Title of the signal",
+                            "default": ""
+                        }
+                    },
+                    "required": [
+                        "signal_text"
+                    ]
+                }
+            },
+            {
+                "name": "batch_score_signals",
+                "path": "/tools/batch_score_signals",
+                "method": "POST",
+                "description": "Score multiple signals for stealth launch likelihood in batch",
+                "input_schema": {
+                    "type": "object",
+                    "properties": {
+                        "signals": {
+                            "type": "array",
+                            "description": "Array of signals to score",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "signal_text": {
+                                        "type": "string",
+                                        "description": "Text content of the signal"
+                                    },
+                                    "signal_title": {
+                                        "type": "string",
+                                        "description": "Title or identifier for the signal",
+                                        "default": ""
+                                    }
+                                },
+                                "required": [
+                                    "signal_text"
+                                ]
+                            },
+                            "minItems": 1,
+                            "maxItems": 20
+                        }
+                    },
+                    "required": [
+                        "signals"
+                    ]
+                }
+            },
+            {
+                "name": "search_tech_sites",
+                "path": "/tools/search_tech_sites",
+                "method": "POST",
+                "description": "Search tech news sites for stealth product launches",
+                "input_schema": {
+                    "type": "object",
+                    "properties": {
+                        "query": {
+                            "type": "string",
+                            "description": "Search query for tech news"
+                        },
+                        "num_results": {
+                            "type": "integer",
+                            "description": "Number of results to return",
+                            "default": 3,
+                            "minimum": 1,
+                            "maximum": 10
+                        }
+                    },
+                    "required": [
+                        "query"
+                    ]
+                }
+            },
+            {
+                "name": "parse_fields",
+                "path": "/tools/parse_fields",
+                "method": "POST",
+                "description": "Extract structured stealth-launch indicators from raw HTML using Nimble's AI Parsing Skills",
+                "input_schema": {
+                    "type": "object",
+                    "properties": {
+                        "html": {
+                            "type": "string",
+                            "description": "Raw HTML content to parse"
+                        },
+                        "target_fields": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "description": "List of fields to extract (e.g. ['pricing', 'changelog', 'launch_announcement'])",
+                            "default": [
+                                "pricing",
+                                "changelog"
+                            ]
+                        }
+                    },
+                    "required": [
+                        "html"
+                    ]
+                }
+            },
+            {
+                "name": "run_pipeline",
+                "path": "/tools/run_pipeline",
+                "method": "POST",
+                "description": "End-to-end detection pipeline for stealth product launches",
+                "input_schema": {
+                    "type": "object",
+                    "properties": {
+                        "query": {
+                            "type": "string",
+                            "description": "Search query to detect stealth launches"
+                        },
+                        "num_results": {
+                            "type": "integer",
+                            "description": "Number of search results to analyze",
+                            "default": 5
+                        },
+                        "target_fields": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "description": "Fields to extract from HTML, e.g. ['pricing', 'changelog']",
+                            "default": [
+                                "pricing",
+                                "changelog"
+                            ]
+                        }
+                    },
+                    "required": [
+                        "query"
+                    ]
+                }
+            }
+        ]
+    },
+    "capabilities": {
+        "web_search": "Search across the entire web using Tavily API",
+        "url_extraction": "Extract clean text content from any URL using BeautifulSoup",
+        "ai_scoring": "AI-powered analysis of signals for stealth launch likelihood",
+        "batch_processing": "Process multiple signals efficiently in parallel",
+        "tech_focused_search": "Targeted search across tech news sites and Product Hunt",
+        "field_parsing": "Extract structured data like pricing and changelog from HTML",
+        "end_to_end_pipeline": "Complete stealth launch detection workflow",
+        "slack_alerts": "Real-time notifications for high-confidence signals"
+    },
+    "requirements": {
+        "python": ">=3.8",
+        "dependencies": [
+            "fastapi>=0.104.0",
+            "uvicorn>=0.24.0",
+            "pydantic>=2.0.0",
+            "aiohttp>=3.8.0",
+            "beautifulsoup4>=4.12.0",
+            "openai>=1.0.0",
+            "python-dotenv>=1.0.0"
+        ]
+    },
+    "environment_variables": {
+        "TAVILY_API_KEY": "Required for web search functionality",
+        "OPENAI_API_KEY": "Required for AI-powered signal scoring",
+        "NIMBLE_API_KEY": "Optional for advanced field parsing",
+        "SLACK_WEBHOOK_URL": "Optional for real-time alerts"
+    },
+    "usage": {
+        "start_server": "python fastapi_server.py",
+        "smithery_dev": "smithery dev",
+        "base_url": "http://localhost:8000",
+        "docs": "http://localhost:8000/docs"
+    }
+}

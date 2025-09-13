@@ -1,0 +1,35 @@
+{
+    "name": "score_signal",
+    "description": "Score a textual signal for likelihood of being a stealth product launch",
+    "inputSchema": {
+        "type": "object",
+        "properties": {
+            "signal_text": {
+                "type": "string",
+                "description": "Full body of signal to analyze"
+            },
+            "signal_title": {
+                "type": "string",
+                "description": "Short title or source label for the signal",
+                "default": ""
+            }
+        },
+        "required": [
+            "signal_text"
+        ]
+    },
+    "examples": [
+        {
+            "signal_text": "We're excited to announce our new AI-powered productivity tool that we've been building in stealth mode for the past 18 months. The beta launch is happening next week for select users.",
+            "signal_title": "Product Launch Announcement"
+        },
+        {
+            "signal_text": "Just had coffee with the team. Great weather today!",
+            "signal_title": "Social Media Post"
+        },
+        {
+            "signal_text": "Our stealth startup has raised $5M in Series A funding and is preparing to launch our revolutionary blockchain platform. We've been operating under the radar for 2 years.",
+            "signal_title": "Funding Announcement"
+        }
+    ]
+}

@@ -1,0 +1,46 @@
+{
+  "name": "run_pipeline",
+  "description": "End-to-end detection pipeline for stealth product launches",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "Search query to detect stealth launches"
+      },
+      "num_results": {
+        "type": "integer",
+        "description": "Number of search results to analyze",
+        "default": 5
+      },
+      "target_fields": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Fields to extract from HTML, e.g. ['pricing', 'changelog']",
+        "default": ["pricing", "changelog"]
+      }
+    },
+    "required": [
+      "query"
+    ]
+  },
+  "examples": [
+    {
+      "query": "stealth startup launch",
+      "num_results": 5,
+      "target_fields": ["pricing", "changelog"]
+    },
+    {
+      "query": "AI company emerges from stealth",
+      "num_results": 3,
+      "target_fields": ["launch_date", "features"]
+    },
+    {
+      "query": "crypto platform quiet launch",
+      "num_results": 4,
+      "target_fields": ["pricing", "announcement"]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "name": "url_extract",
+  "description": "Extract and clean text content from a given URL",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "url": {
+        "type": "string",
+        "description": "The URL to extract content from",
+        "format": "uri"
+      },
+      "parsing_type": {
+        "type": "string",
+        "description": "Type of content parsing to perform",
+        "enum": [
+          "plain_text",
+          "html"
+        ],
+        "default": "plain_text"
+      },
+      "wait_time": {
+        "type": "integer",
+        "description": "Artificial delay in seconds for page to load",
+        "default": 2,
+        "minimum": 0,
+        "maximum": 10
+      }
+    },
+    "required": [
+      "url"
+    ]
+  },
+  "examples": [
+    {
+      "url": "https://news.ycombinator.com",
+      "parsing_type": "plain_text",
+      "wait_time": 2
+    },
+    {
+      "url": "https://techcrunch.com/2024/01/15/stealth-startup-launch",
+      "parsing_type": "html",
+      "wait_time": 3
+    },
+    {
+      "url": "https://www.producthunt.com/posts/stealth-ai-tool",
+      "parsing_type": "plain_text",
+      "wait_time": 1
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "name": "batch_score_signals",
+  "description": "Score multiple signals for stealth launch likelihood in batch",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "signals": {
+        "type": "array",
+        "description": "Array of signals to score",
+        "items": {
+          "type": "object",
+          "properties": {
+            "signal_text": {
+              "type": "string",
+              "description": "Text content of the signal"
+            },
+            "signal_title": {
+              "type": "string",
+              "description": "Title or identifier for the signal",
+              "default": ""
+            }
+          },
+          "required": ["signal_text"]
+        },
+        "minItems": 1,
+        "maxItems": 20
+      }
+    },
+    "required": [
+      "signals"
+    ]
+  },
+  "examples": [
+    {
+      "signals": [
+        {
+          "signal_text": "We're launching our new AI product after 18 months in stealth mode",
+          "signal_title": "AI Launch Announcement"
+        },
+        {
+          "signal_text": "Just had coffee with the team. Great weather today!",
+          "signal_title": "Social Media Post"
+        }
+      ]
+    },
+    {
+      "signals": [
+        {
+          "signal_text": "Our stealth startup has raised $5M and is preparing to launch",
+          "signal_title": "Funding News"
+        },
+        {
+          "signal_text": "New features coming next week to our platform",
+          "signal_title": "Product Update"
+        },
+        {
+          "signal_text": "After 2 years of development, we're ready to reveal our blockchain solution",
+          "signal_title": "Blockchain Launch"
+        }
+      ]
+    }
+  ]
+}

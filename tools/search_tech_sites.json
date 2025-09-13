@@ -1,0 +1,37 @@
+{
+  "name": "search_tech_sites",
+  "description": "Search tech news sites for stealth product launches",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "Search query for tech news"
+      },
+      "num_results": {
+        "type": "integer",
+        "description": "Number of results to return",
+        "default": 3,
+        "minimum": 1,
+        "maximum": 10
+      }
+    },
+    "required": [
+      "query"
+    ]
+  },
+  "examples": [
+    {
+      "query": "stealth AI startup launch",
+      "num_results": 5
+    },
+    {
+      "query": "new fintech emerges from stealth",
+      "num_results": 3
+    },
+    {
+      "query": "crypto startup quiet launch",
+      "num_results": 4
+    }
+  ]
+}

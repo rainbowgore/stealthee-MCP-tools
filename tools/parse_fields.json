@@ -1,0 +1,38 @@
+{
+  "name": "parse_fields",
+  "description": "Extract structured stealth-launch indicators from raw HTML using Nimble's AI Parsing Skills",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "html": {
+        "type": "string",
+        "description": "Raw HTML content to parse"
+      },
+      "target_fields": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "List of fields to extract (e.g. ['pricing', 'changelog', 'launch_announcement'])",
+        "default": ["pricing", "changelog"]
+      }
+    },
+    "required": [
+      "html"
+    ]
+  },
+  "examples": [
+    {
+      "html": "<html><body><h1>New Product Launch</h1><p>Pricing: $99/month</p><div>Changelog: Added enterprise features</div></body></html>",
+      "target_fields": ["pricing", "changelog"]
+    },
+    {
+      "html": "<div><h2>Stealth Startup</h2><p>We've been building in secret for 2 years</p><span>Launch Date: Next week</span></div>",
+      "target_fields": ["launch_date", "announcement"]
+    },
+    {
+      "html": "<article><h3>Product Update</h3><p>New features: AI integration, better UX</p><footer>Version 2.0</footer></article>",
+      "target_fields": ["features", "version"]
+    }
+  ]
+}
