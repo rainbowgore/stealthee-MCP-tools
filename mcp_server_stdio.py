@@ -720,32 +720,52 @@ Respond with valid JSON array format:
             logger.error("NIMBLE_API_KEY environment variable not set")
             return [{
                 "type": "text",
-                "text": "❌ Error: NIMBLE_API_KEY environment variable not set. Using mock response for demonstration."
+                "text": "❌ Error: NIMBLE_API_KEY environment variable not set. Please configure your API key."
             }]
         
         try:
-            # For now, we'll use a mock implementation since we don't have the exact Nimble AI Parsing Skills endpoint
-            # In production, this would call the actual Nimble API
             logger.info(f"Parsing fields from HTML: {target_fields}")
             
-            # Mock response for demonstration
-            mock_results = {
-                "pricing": "$89/mo → $99/mo",
-                "changelog": "Added enterprise tier",
-                "launch_announcement": "'Now available for select customers' detected."
+            # Make actual API call to Nimble AI Parsing Skills
+            url = "https://api.nimble.com/parse-fields"
+            headers = {
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json"
+            }
+            data = {
+                "html": html,
+                "fields": target_fields
             }
             
-            # Format the results
-            result_text = "📦 Parsed Fields:\n\n"
-            for field in target_fields:
-                value = mock_results.get(field, "No data found")
-                result_text += f"{field.title()}: {value}\n"
+            async with aiohttp.ClientSession() as session:
+                async with session.post(url, json=data, headers=headers) as response:
+                    if response.status == 200:
+                        result = await response.json()
+                        
+                        # Format the results
+                        result_text = "�� Parsed Fields:\n\n"
+                        for field in target_fields:
+                            value = result.get(field, "No data found")
+                            result_text += f"{field.title()}: {value}\n"
+                        
+                        return [{
+                            "type": "text",
+                            "text": result_text
+                        }]
+                    else:
+                        error_text = await response.text()
+                        logger.error(f"Nimble API error {response.status}: {error_text}")
+                        return [{
+                            "type": "text",
+                            "text": f"❌ Nimble API error {response.status}: {error_text}"
+                        }]
             
+        except aiohttp.ClientError as e:
+            logger.error(f"Network error calling Nimble API: {e}")
             return [{
                 "type": "text",
-                "text": result_text
+                "text": f"❌ Network error: {str(e)}"
             }]
-            
         except Exception as e:
             logger.error(f"Field parsing error: {e}")
             return [{
